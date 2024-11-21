@@ -7,7 +7,7 @@
 
 // Token types
 enum class TokenType {
-  INT, IDENTIFIER, ASSIGN, PRINT, NUMBER, 
+  FLOAT,INT, IDENTIFIER, ASSIGN, PRINT, NUMBER, 
   PLUS, MINUS, MULTIPLY, DIVIDE, LPAREN, RPAREN, 
   NEWLINE, END
 };
@@ -38,6 +38,7 @@ class Lexer {
     if (isdigit(current)) {
       size_t start = pos;
       while (pos < input.size() && isdigit(input[pos])) pos++;
+      while (input[pos] == '.' || isdigit(input[pos])) pos++;
       return { TokenType::NUMBER, input.substr(start, pos - start) };
     }
 
@@ -46,6 +47,7 @@ class Lexer {
       while (pos < input.size() && isalnum(input[pos])) pos++;
       std::string word = input.substr(start, pos - start);
       if (word == "int") return { TokenType::INT, word };
+      if (word == "float") return { TokenType::FLOAT, word };
       if (word == "print") return { TokenType::PRINT, word };
       return { TokenType::IDENTIFIER, word };
     }

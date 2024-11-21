@@ -6,8 +6,10 @@ make
 # Examples
 code :
 ```
-int a = 10 * 10 + (20 + 2)
-print(a)
+int a = 100
+int b = 100
+int c = a + b + (10 * 20)
+print(c)
 ```
 run :
 ```
@@ -16,5 +18,5 @@ run :
 
 output :
 ```
-122
+400
 ```

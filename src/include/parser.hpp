@@ -26,6 +26,11 @@ class Parser {
       eat(TokenType::RPAREN);
       return result;
     } else {
+      if(variables.count(currentToken.value)){
+        int value = variables.at(currentToken.value);
+        eat(TokenType::IDENTIFIER);
+        return value;
+      }
       throw std::runtime_error("Unexpected token in factor: " + currentToken.value);
     }
   }
@@ -59,9 +64,10 @@ class Parser {
   }
 
   public:
+  std::unordered_map<std::string, int> variables;
   Parser(Lexer lex) : lexer(lex), currentToken(lexer.getNextToken()) {}
 
-  void parseProgram(std::unordered_map<std::string, int>& variables) {
+  void parseProgram() {
     while (currentToken.type != TokenType::END) {
       if (currentToken.type == TokenType::INT) {
         eat(TokenType::INT);

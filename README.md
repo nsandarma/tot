@@ -17,6 +17,13 @@ float x = 20.20 + d
 # this is comment 3
 float a  = (d + x) + 10.290
 print(a)
+
+# string data type
+str name = "fulan"
+print(name)
+
+# print string literal
+print("hello world")
 ```
 run :
 ```
@@ -26,4 +33,6 @@ run :
 output :
 ```
 430.89
+fulan
+hello world
 ```

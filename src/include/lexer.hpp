@@ -9,7 +9,7 @@
 enum class TokenType {
   FLOAT,INT, IDENTIFIER, ASSIGN, PRINT, NUMBER, 
   PLUS, MINUS, MULTIPLY, DIVIDE, LPAREN, RPAREN, 
-  NEWLINE, END, COMMENT
+  NEWLINE, END, COMMENT,STRING,LITERAL
 };
 
 struct Token {
@@ -34,12 +34,18 @@ class Lexer {
     if (current == '#'){
       size_t start = pos;
       while(input[pos] != '\n')pos++;
-      std::string i = input.substr(start,pos - start);
       return {TokenType::COMMENT,input.substr(start,pos-start)};
     }
     if (current == '\n') {
       pos++;
       return { TokenType::NEWLINE, "\\n" };
+    }
+
+    if (current == '"'){
+      size_t start = ++pos;
+      while(isalpha(input[pos]) || input[pos] != '"') pos++;
+      std::string i = input.substr(start,pos - start);
+      return {TokenType::LITERAL,input.substr(start,(pos++)-start)};
     }
 
     if (isdigit(current)) {
@@ -53,6 +59,7 @@ class Lexer {
       size_t start = pos;
       while (pos < input.size() && isalnum(input[pos])) pos++;
       std::string word = input.substr(start, pos - start);
+      if (word == "str") return { TokenType::STRING, word };
       if (word == "int") return { TokenType::INT, word };
       if (word == "float") return { TokenType::FLOAT, word };
       if (word == "print") return { TokenType::PRINT, word };
@@ -95,6 +102,8 @@ inline std::string token_to_str(const Token &token){
     case TokenType::NEWLINE : return buff + "Token : " + "NEWLINE" + "\n";
     case TokenType::END : return buff + "Token : " + "END" + "\n";
     case TokenType::COMMENT : return buff + "Token : " + "COMMENT" + "\n";
+    case TokenType::STRING : return buff + "Token : " + "STRING" + "\n";
+    case TokenType::LITERAL : return buff + "Token : " + "LITERAL" + "\n";
     default : return buff + "Token : UNKNOWN TOKEN";
   }
 }

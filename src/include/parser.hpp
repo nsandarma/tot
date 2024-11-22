@@ -2,6 +2,7 @@
 #define __PARSER_H
 
 #include "lexer.hpp"
+#include <cstring>
 #include <unordered_map>
 
 struct Variables{
@@ -87,6 +88,35 @@ class Parser {
     }
     return result;
   }
+  
+  void parserPrint(){
+    eat(TokenType::PRINT);
+    eat(TokenType::LPAREN);
+    if (currentToken.type == TokenType::LITERAL){
+      std::cout << currentToken.value << std::endl;
+      eat(TokenType::LITERAL);
+      eat(TokenType::RPAREN);
+    }else{
+      std::string varName = currentToken.value;
+      eat(TokenType::IDENTIFIER);
+      eat(TokenType::RPAREN);
+
+      if (variables.find(varName) != variables.end()) {
+        if(variables[varName].type == TokenType::INT){
+          std::cout << variables[varName].intValue << std::endl;
+        }else if(variables[varName].type == TokenType::FLOAT){
+          std::cout << variables[varName].floatValue << std::endl;
+        }else{
+          std::cout << variables[varName].varName << std::endl;
+        }
+
+      } else {
+        throw std::runtime_error("Variable not found: " + varName);
+      }
+
+    }
+
+  }
 
   public:
   std::unordered_map<std::string, Variables> variables;
@@ -96,6 +126,18 @@ class Parser {
     while (currentToken.type != TokenType::END) {
       if (currentToken.type == TokenType::COMMENT){
         eat(currentToken.type);
+      }
+      if (currentToken.type == TokenType::STRING){
+        Variables val;
+        eat(currentToken.type);
+        std::string varName = currentToken.value;
+        eat(TokenType::IDENTIFIER);
+        eat(TokenType::ASSIGN);
+        std::string value = currentToken.value;
+        val.varName = value;
+        eat(TokenType::LITERAL);
+        val.type = TokenType::LITERAL;
+        variables[varName] = val;
       }
       if (currentToken.type == TokenType::INT || currentToken.type == TokenType::FLOAT) {
         TokenType varType = currentToken.type;
@@ -115,22 +157,7 @@ class Parser {
         }
         variables[varName] = val;
       } else if (currentToken.type == TokenType::PRINT) {
-        eat(TokenType::PRINT);
-        eat(TokenType::LPAREN);
-        std::string varName = currentToken.value;
-        eat(TokenType::IDENTIFIER);
-        eat(TokenType::RPAREN);
-
-        if (variables.find(varName) != variables.end()) {
-          if(variables[varName].type == TokenType::INT){
-            std::cout << variables[varName].intValue << std::endl;
-          }else{
-            std::cout << variables[varName].floatValue << std::endl;
-          }
-
-        } else {
-          throw std::runtime_error("Variable not found: " + varName);
-        }
+        parserPrint();
       }
       if (currentToken.type == TokenType::NEWLINE)
         eat(TokenType::NEWLINE);

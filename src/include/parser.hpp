@@ -94,6 +94,9 @@ class Parser {
 
   void parseProgram() {
     while (currentToken.type != TokenType::END) {
+      if (currentToken.type == TokenType::COMMENT){
+        eat(currentToken.type);
+      }
       if (currentToken.type == TokenType::INT || currentToken.type == TokenType::FLOAT) {
         TokenType varType = currentToken.type;
         eat(currentToken.type);

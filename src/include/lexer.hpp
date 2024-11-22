@@ -9,7 +9,7 @@
 enum class TokenType {
   FLOAT,INT, IDENTIFIER, ASSIGN, PRINT, NUMBER, 
   PLUS, MINUS, MULTIPLY, DIVIDE, LPAREN, RPAREN, 
-  NEWLINE, END
+  NEWLINE, END, COMMENT
 };
 
 struct Token {
@@ -30,6 +30,13 @@ class Lexer {
     if (pos >= input.size()) return { TokenType::END, "" };
 
     char current = input[pos];
+
+    if (current == '#'){
+      size_t start = pos;
+      while(input[pos] != '\n')pos++;
+      std::string i = input.substr(start,pos - start);
+      return {TokenType::COMMENT,input.substr(start,pos-start)};
+    }
     if (current == '\n') {
       pos++;
       return { TokenType::NEWLINE, "\\n" };
@@ -64,5 +71,32 @@ class Lexer {
     }
   }
 };
+
+  // FLOAT,INT, IDENTIFIER, ASSIGN, PRINT, NUMBER, 
+  // PLUS, MINUS, MULTIPLY, DIVIDE, LPAREN, RPAREN, 
+  // NEWLINE, END, COMMENT
+
+inline std::string token_to_str(const Token &token){
+  std::string value = token.value;
+  std::string buff = "Value : "+value + "\n";
+  switch (token.type) {
+    case TokenType::FLOAT : return buff + "Token : " + "FLOAT" + "\n";
+    case TokenType::INT : return buff + "Token : " + "INT" + "\n";
+    case TokenType::IDENTIFIER : return buff + "Token : " + "IDENTIFIER" + "\n";
+    case TokenType::ASSIGN : return buff + "Token : " + "ASSIGN" + "\n";
+    case TokenType::PRINT : return buff + "Token : " + "PRINT" + "\n";
+    case TokenType::NUMBER : return buff + "Token : " + "NUMBER" + "\n";
+    case TokenType::PLUS : return buff + "Token : " + "PLUS" + "\n";
+    case TokenType::MINUS : return buff + "Token : " + "MINUS" + "\n";
+    case TokenType::MULTIPLY : return buff + "Token : " + "MULTIPLY" + "\n";
+    case TokenType::DIVIDE : return buff + "Token : " + "DIVIDE" + "\n";
+    case TokenType::LPAREN : return buff + "Token : " + "LPAREN" + "\n";
+    case TokenType::RPAREN : return buff + "Token : " + "RPAREN" + "\n";
+    case TokenType::NEWLINE : return buff + "Token : " + "NEWLINE" + "\n";
+    case TokenType::END : return buff + "Token : " + "END" + "\n";
+    case TokenType::COMMENT : return buff + "Token : " + "COMMENT" + "\n";
+    default : return buff + "Token : UNKNOWN TOKEN";
+  }
+}
 
 #endif

@@ -32,6 +32,7 @@ int main(int argc, char* argv[]){
   Lexer lexer(code);
   Parser parser(lexer);
 
+
   try {
     parser.parseProgram();
   } catch (const std::runtime_error& e) {
